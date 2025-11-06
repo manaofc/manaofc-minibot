@@ -54,6 +54,16 @@ async function pushFile(owner, repo, path, content, message) {
   }
 }
 
+// 🧩 Random Repo Name Generator
+function randomRepoName(prefix = "manaofc", length = 6) {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return `${prefix}-${result}`;
+}
+
 // 🧩 Web Interface
 app.get("/", (req, res) => {
   res.send(`
@@ -170,6 +180,7 @@ app.get("/", (req, res) => {
           if (data.success) {
             document.getElementById("mainContainer").innerHTML = \`
               <h2>🤖 Bot connected successfully ✔️</h2>
+              <p><b>Repository:</b> ${data.repoName}</p>
               <p>Please wait 1 minute for setup...</p>
               <p><b>Developer:</b> <a href="https://wa.me/94721551183" style="color:lime;">manaofc</a></p>
             \`;
@@ -186,10 +197,10 @@ app.get("/", (req, res) => {
   `);
 });
 
-// 🧠 Bot creation route (repoName = ownerNumber, prefix removed)
+// 🧠 Bot creation route (random repo name)
 app.post("/create-bot", async (req, res) => {
   const { ownerNumber, sessionId } = req.body;
-  const repoName = ownerNumber; // 👈 Repo name = ownerNumber
+  const repoName = randomRepoName(); // 👈 Random repo name generator
 
   try {
     await axios.post(
@@ -246,7 +257,7 @@ jobs:
 `;
     await pushFile(GITHUB_USER, repoName, ".github/workflows/nodejs.yml", workflow, "Add workflow");
 
-    res.json({ success: true });
+    res.json({ success: true, repoName });
   } catch (err) {
     res.json({ success: false, error: err.message });
   }
