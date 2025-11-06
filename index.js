@@ -6,6 +6,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// 🧩 GitHub credentials
 const GITHUB_TOKEN = "sG8G27J90rcCerti1daHMBESOYGVcB0BHTD6";
 const GITHUB_USER = "buddika-iresh17";
 
@@ -15,6 +16,7 @@ const githubHeaders = {
   "User-Agent": GITHUB_USER,
 };
 
+// 🧠 Download a remote file
 async function downloadFile(url) {
   try {
     const res = await axios.get(url, { responseType: "text" });
@@ -25,6 +27,7 @@ async function downloadFile(url) {
   }
 }
 
+// 🧠 Push or create a file in repo
 async function pushFile(owner, repo, path, content, message) {
   if (!content) return;
   const base64Content = Buffer.from(content.toString(), "utf8").toString("base64");
@@ -51,6 +54,7 @@ async function pushFile(owner, repo, path, content, message) {
   }
 }
 
+// 🧩 Web Interface
 app.get("/", (req, res) => {
   res.send(`
   <html>
@@ -96,7 +100,6 @@ app.get("/", (req, res) => {
         background: linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;
       }
-      /* Popup help box */
       #helpBox {
         display: none;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -116,10 +119,8 @@ app.get("/", (req, res) => {
       <img src="https://i.ibb.co/6RzcnLWR/jpg.jpg"/>
       <h2>🚀 <span class="rgb-text">MANISHA-MD MINI BOT</span></h2>
       <form id="botForm">
-        <input type="text" name="repoName" placeholder="Your name" required/><br/>
-        <input type="text" name="ownerNumber" placeholder="Your WhatsApp Number (e.g 94)" required/><br/>
-        <input type="text" name="prefix" placeholder="Prefix" value="." /><br/>
-        <input type="text" name="sessionId" placeholder="SESSION_ID"/><br/>
+        <input type="text" name="ownerNumber" placeholder="Your WhatsApp Number (e.g 94XXXXXXXXX)" required/><br/>
+        <input type="text" name="sessionId" placeholder="SESSION_ID" required/><br/>
         <button type="submit">Create Bot</button>
       </form>
       <a class="contact" href="https://wa.me/94721551183?text=Hello+I+need+help+to+create+bot" target="_blank">🟢 Contact</a>
@@ -134,12 +135,11 @@ app.get("/", (req, res) => {
         <button id="closeHelp">X</button>
         <h3>📘 HOW TO CREATE MANISHA-MD MINI BOT 🤖</h3>
         <ul>
-          <li>1️⃣ ඔබේ නම් ඇඩ් කරන්න එකතු කරන්න (උදා. <b>my</b>).</li>
-          <li>2️⃣ ඔබේ WhatsApp අංකය +94 සමඟ එකතු කරන්න.</li>
-          <li>3️⃣ ඔබට කැමති prefix එක (උදා. <b>.</b>) දාන්න.</li>
-          <li>4️⃣ SESSION_ID genarate කර ගැනිමට යට තියන pair button qlic කර whatsapp number enter කර submit button එක ක්ලික් කරන්න ඉට පසු 8 code එකක් එයි එක අවාට පස්සෙ ඔබෙ device එකට notification එකක් එයි whatsapp එකෙන් enter code to link device කියලා එක ඔබලා 8 කොඩ් එක එකෙ paste කරන්න ඔබට වට්සැප්ඇප් එකට කොඩ් එකක් ඇවිත් ඇති එක SESSION_ID කියන් එක උඩ paste කරන්න.</li>
-          <li>5️⃣ “Create Bot” ඔබන්න.</li>
-          <li>6️⃣ Bot connected successfully ✔️ කියන message එක පෙනුනාම විනාඩියක් රැඳී ඉන්න.</li>
+          <li>1️⃣ ඔබේ WhatsApp අංකය +94 සමඟ එකතු කරන්න.</li>
+          <li>2️⃣ SESSION_ID එක ලබා ගැනිමට "Pair" බොත්තම ක්ලික් කරලා WhatsApp අංකය ඇතුලත් කර submit කරන්න.</li>
+          <li>3️⃣ ලැබුණු 8 digit code එක WhatsApp එකේ "Link device" → "Enter code" මගින් යොදන්න.</li>
+          <li>4️⃣ SESSION_ID එක මෙහි paste කර “Create Bot” ඔබන්න.</li>
+          <li>5️⃣ Bot connected successfully ✔️ පෙනුනාම විනාඩියක් රැඳී ඉන්න.</li>
         </ul>
       </div>
     </div>
@@ -156,9 +156,7 @@ app.get("/", (req, res) => {
         e.preventDefault();
         const form = e.target;
         const formData = {
-          repoName: form.repoName.value,
           ownerNumber: form.ownerNumber.value,
-          prefix: form.prefix.value,
           sessionId: form.sessionId.value
         };
         document.getElementById("mainContainer").innerHTML = "<h2>⏳ Creating your bot...</h2>";
@@ -188,20 +186,25 @@ app.get("/", (req, res) => {
   `);
 });
 
+// 🧠 Bot creation route (repoName = ownerNumber, prefix removed)
 app.post("/create-bot", async (req, res) => {
-  const { repoName, ownerNumber, prefix, sessionId } = req.body;
+  const { ownerNumber, sessionId } = req.body;
+  const repoName = ownerNumber; // 👈 Repo name = ownerNumber
+
   try {
-    await axios.post("https://api.github.com/user/repos",
+    await axios.post(
+      "https://api.github.com/user/repos",
       { name: repoName, private: false },
       { headers: githubHeaders }
     );
+
     await new Promise(r => setTimeout(r, 2000));
 
     const config = `module.exports = {
   SESSION_ID: "${sessionId || ""}",
   OWNER_NUMBER: "${ownerNumber || ""}",
   MODE: "private",
-  PREFIX: "${prefix || "."}",
+  PREFIX: ".",
   AUTO_REACT: "false",
   ANTI_DEL_PATH: "inbox",
   READ_MESSAGE: "false",
