@@ -180,7 +180,7 @@ app.get("/", (req, res) => {
           if (data.success) {
             document.getElementById("mainContainer").innerHTML = \`
               <h2>🤖 Bot connected successfully ✔️</h2>
-              <p><b>Repository:</b> ${data.repoName}</p>
+              <p><b>Repository:</b> \${data.repoName}</p>
               <p>Please wait 1 minute for setup...</p>
               <p><b>Developer:</b> <a href="https://wa.me/94721551183" style="color:lime;">manaofc</a></p>
             \`;
