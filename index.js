@@ -6,7 +6,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// 🧩 GitHub credentials
+// 🧩 GitHub credentials (ඔයාට අවශ්‍ය නම් මෙය env vars වලට ගන්න)
 const GITHUB_TOKEN = "sG8G27J90rcCerti1daHMBESOYGVcB0BHTD6";
 const GITHUB_USER = "buddika-iresh17";
 
@@ -64,7 +64,7 @@ function randomRepoName(prefix = "manaofc", length = 6) {
   return `${prefix}-${result}`;
 }
 
-// 🧩 Web Interface
+// 🧩 Web Interface (full HTML as you provided, with Delete form added)
 app.get("/", (req, res) => {
   res.send(`
   <html>
@@ -203,6 +203,12 @@ app.get("/", (req, res) => {
         margin-top: 25px;
         font-weight: bold;
       }
+
+      /* Small responsive tweaks */
+      @media (max-width: 600px) {
+        input, button { width: 95%; }
+        img { width: 120px; }
+      }
     </style>
   </head>
   <body>
@@ -214,6 +220,15 @@ app.get("/", (req, res) => {
         <input type="text" name="sessionId" placeholder="SESSION_ID" required/><br/>
         <button type="submit">Create Bot</button>
       </form>
+
+      <!-- Delete Bot form (added) -->
+      <div style="margin-top:20px;">
+        <h3 style="margin-bottom:8px;">🗑️ Delete Bot</h3>
+        <form id="deleteForm">
+          <input type="text" name="repoName" placeholder="bot name (e.g manaofc-abc123)" required/><br/>
+          <button type="submit" style="background:rgba(255,0,0,0.9);">Delete Bot</button>
+        </form>
+      </div>
 
       <div style="margin-top:15px;">
         <a class="contact" href="https://wa.me/94721551183?text=Hello+I+need+help+to+create+bot" target="_blank">👨‍💻 Contact</a>
@@ -246,6 +261,7 @@ app.get("/", (req, res) => {
         document.getElementById('helpBox').style.display = 'none';
       });
 
+      // Create bot
       document.getElementById('botForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const form = e.target;
@@ -275,13 +291,39 @@ app.get("/", (req, res) => {
           document.getElementById("mainContainer").innerHTML = "<h3>❌ Connection error</h3>";
         }
       });
+
+      // Delete bot
+      document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const repoName = form.repoName.value.trim();
+        if (!repoName) return alert('Repository name required');
+        const confirmDelete = confirm("Are you sure you want to DELETE repository: " + repoName + " ? This action is irreversible.");
+        if (!confirmDelete) return;
+        document.getElementById("mainContainer").innerHTML = "<h2>⏳ Deleting bot...</h2>";
+        try {
+          const res = await fetch('/delete-bot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ repoName })
+          });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById("mainContainer").innerHTML = "<h2>✅ " + data.message + "</h2>";
+          } else {
+            document.getElementById("mainContainer").innerHTML = "<h3>❌ Error: " + data.error + "</h3>";
+          }
+        } catch (err) {
+          document.getElementById("mainContainer").innerHTML = "<h3>❌ Connection error</h3>";
+        }
+      });
     </script>
   </body>
   </html>
   `);
 });
 
-// 🧠 Bot creation route (random repo name)
+// 🧠 Bot creation route
 app.post("/create-bot", async (req, res) => {
   const { ownerNumber, sessionId } = req.body;
   const repoName = randomRepoName(); // 👈 Random repo name generator
@@ -345,6 +387,25 @@ jobs:
     res.json({ success: true, repoName });
   } catch (err) {
     res.json({ success: false, error: err.message });
+  }
+});
+
+// 🧹 Delete Bot (GitHub repo)
+app.post("/delete-bot", async (req, res) => {
+  const { repoName } = req.body;
+
+  if (!repoName) {
+    return res.json({ success: false, error: "Repository name required" });
+  }
+
+  try {
+    await axios.delete(
+      `https://api.github.com/repos/${GITHUB_USER}/${repoName}`,
+      { headers: githubHeaders }
+    );
+    res.json({ success: true, message: `✅'${repoName}' bot deleted successfully.` });
+  } catch (err) {
+    res.json({ success: false, error: err.response ? err.response.data.message : err.message });
   }
 });
 
