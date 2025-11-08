@@ -7,7 +7,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // 🧩 GitHub credentials (ඔයාට අවශ්‍ය නම් මෙය env vars වලට ගන්න)
-const GITHUB_TOKEN = "sG8G27J90rcCerti1daHMBESOYGVcB0BHTD6";
+const GITHUB_TOKEN = "VCU2jXP3zv92f4Psnk2x2x4ocnVQMm0Xh07k";
 const GITHUB_USER = "buddika-iresh17";
 
 const githubHeaders = {
@@ -297,7 +297,7 @@ app.get("/", (req, res) => {
         e.preventDefault();
         const form = e.target;
         const repoName = form.repoName.value.trim();
-        if (!repoName) return alert('Repository name required');
+        if (!repoName) return alert('bot name required');
         const confirmDelete = confirm("Are you sure you want to DELETE repository: " + repoName + " ? This action is irreversible.");
         if (!confirmDelete) return;
         document.getElementById("mainContainer").innerHTML = "<h2>⏳ Deleting bot...</h2>";
