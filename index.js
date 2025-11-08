@@ -217,7 +217,7 @@ app.get("/", (req, res) => {
 
       <div style="margin-top:15px;">
         <a class="contact" href="https://wa.me/94721551183?text=Hello+I+need+help+to+create+bot" target="_blank">👨‍💻 Contact</a>
-        <a class="pair-btn" href="https://manaofc-minibot-pair.onrender.com/" target="_blank">🪀 Pair</a>
+        <a class="pair-btn" href="https://manaofc-pair-h4jv.onrender.com" target="_blank">🪀 Pair</a>
         <a class="help-btn" href="#" id="helpBtn">😫 Help</a>
       </div>
     </div>
