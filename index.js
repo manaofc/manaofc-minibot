@@ -298,7 +298,7 @@ app.get("/", (req, res) => {
         const form = e.target;
         const repoName = form.repoName.value.trim();
         if (!repoName) return alert('bot name required');
-        const confirmDelete = confirm("Are you sure you want to DELETE repository: " + repoName + " ? This action is irreversible.");
+        const confirmDelete = confirm("Are you sure you want to DELETE bot: " + repoName + " ? This action is irreversible.");
         if (!confirmDelete) return;
         document.getElementById("mainContainer").innerHTML = "<h2>⏳ Deleting bot...</h2>";
         try {
