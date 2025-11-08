@@ -73,31 +73,22 @@ app.get("/", (req, res) => {
     <style>
       body {
         font-family: 'Poppins', sans-serif;
-        background: url('https://files.catbox.moe/vuvmh3.gif') no-repeat center center fixed;
-        background-size: cover;
+        background: linear-gradient(120deg, #ff0000, #ff9900, #ffee00, #00ff66, #00ffff, #0066ff, #cc00ff);
+        background-size: 400% 400%;
+        animation: rgbbg 10s infinite alternate;
         color: white;
         text-align: center;
         padding: 40px;
       }
+      @keyframes rgbbg { 0%{background-position:left;} 100%{background-position:right;} }
       .container {
         background: rgba(0,0,0,0.55);
         border-radius: 20px;
         padding: 40px;
         display: inline-block;
         box-shadow: 0 0 20px rgba(255,255,255,0.3);
-        animation: fadeIn 2s ease-in-out;
       }
-      @keyframes fadeIn { 0%{opacity:0;} 100%{opacity:1;} }
-      img { 
-        width: 150px; 
-        border-radius: 50%; 
-        box-shadow: 0 0 20px rgba(255,255,255,0.4); 
-        animation: rotate 6s linear infinite;
-      }
-      @keyframes rotate {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
+      img { width: 150px; border-radius: 50%; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
       input, button {
         padding: 10px; width: 80%; margin: 8px 0; border: none; border-radius: 10px; font-size: 16px;
       }
@@ -108,11 +99,12 @@ app.get("/", (req, res) => {
       }
       button:hover { opacity: 0.9; transform: scale(1.05); }
       .contact, .pair-btn, .help-btn {
-        display: inline-block; padding: 10px 20px; border-radius: 10px;
+        display: inline-block; color: white; padding: 10px 20px; border-radius: 10px;
         text-decoration: none; font-weight: bold; margin-top: 10px; transition: 0.3s;
-        background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-        color: white;
       }
+      .contact { background: #00c851; }
+      .pair-btn { background: #007bff; }
+      .help-btn { background: #ff4444; }
       .contact:hover, .pair-btn:hover, .help-btn:hover { opacity: 0.8; transform: scale(1.05); }
       .rgb-text {
         background: linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);
@@ -141,9 +133,9 @@ app.get("/", (req, res) => {
         <input type="text" name="sessionId" placeholder="SESSION_ID" required/><br/>
         <button type="submit">Create Bot</button>
       </form>
-      <a class="contact" href="https://wa.me/94721551183?text=Hello+I+need+help+to+create+bot" target="_blank">🪀 Contact</a>
-      <a class="pair-btn" href="https://manaofc-minibot-pair.onrender.com/" target="_blank">🌐 Pair</a>
-      <a class="help-btn" href="#" id="helpBtn">👨‍💻 Help</a>
+      <a class="contact" href="https://wa.me/94721551183?text=Hello+I+need+help+to+create+bot" target="_blank">🟢 Contact</a>
+      <a class="pair-btn" href="https://manaofc-minibot-pair.onrender.com/" target="_blank">🔵 Pair</a>
+      <a class="help-btn" href="#" id="helpBtn">🔴 Help</a>
     </div>
 
     <footer style="margin-top:25px;">Developed by <span class="rgb-text">manaofc</span> ©2025</footer>
@@ -188,7 +180,7 @@ app.get("/", (req, res) => {
           if (data.success) {
             document.getElementById("mainContainer").innerHTML = \`
               <h2>🤖 Bot connected successfully ✔️</h2>
-              <p><b>Repository:</b> \${data.repoName}</p>
+              <p><b>bot:</b> \${data.repoName}</p>
               <p>Please wait 1 minute for setup...</p>
               <p><b>Developer:</b> <a href="https://wa.me/94721551183" style="color:lime;">manaofc</a></p>
             \`;
@@ -208,7 +200,7 @@ app.get("/", (req, res) => {
 // 🧠 Bot creation route (random repo name)
 app.post("/create-bot", async (req, res) => {
   const { ownerNumber, sessionId } = req.body;
-  const repoName = randomRepoName();
+  const repoName = randomRepoName(); // 👈 Random repo name generator
 
   try {
     await axios.post(
@@ -224,6 +216,7 @@ app.post("/create-bot", async (req, res) => {
   OWNER_NUMBER: "${ownerNumber || ""}",
   MODE: "private",
   PREFIX: ".",
+  OWNER_REACT: "false",
   AUTO_REACT: "false",
   ANTI_DEL_PATH: "inbox",
   READ_MESSAGE: "false",
