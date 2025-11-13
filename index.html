@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MANISHA-MD MINI BOT</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://files.catbox.moe/vuvmh3.gif') center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding: 40px;
+      margin: 0;
+    }
+    .container {
+      background: rgba(0,0,0,0.65);
+      border-radius: 20px;
+      padding: 40px;
+      display: inline-block;
+      box-shadow: 0 0 25px rgba(255,255,255,0.3);
+      backdrop-filter: blur(6px);
+      animation: glowBox 3s infinite alternate;
+    }
+    @keyframes glowBox {
+      0% { box-shadow: 0 0 10px #ff0080, 0 0 20px #ff0080; }
+      50% { box-shadow: 0 0 25px #00ffff, 0 0 35px #00ffff; }
+      100% { box-shadow: 0 0 25px #00ff00, 0 0 35px #00ff00; }
+    }
+    img {
+      width: 150px;
+      border-radius: 50%;
+      box-shadow: 0 0 30px rgba(255,255,255,0.6);
+      animation: pulse 3s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    input, button {
+      padding: 10px;
+      width: 80%;
+      margin: 8px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    input {
+      background: #fff;
+      color: #000;
+    }
+    button {
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 20px rgba(255,255,255,0.4);
+      background-size: 400% 400%;
+      animation: rgbmove 6s infinite alternate;
+    }
+    button:hover {
+      opacity: 0.9;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255,255,255,0.7);
+    }
+    .contact, .pair-btn, .help-btn {
+      display: inline-block;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      background-size: 400% 400%;
+      animation: rgbmove 6s infinite alternate;
+      transition: 0.3s;
+    }
+    .contact:hover, .pair-btn:hover, .help-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(255,255,255,0.7);
+    }
+    @keyframes rgbmove {
+      0% { background-position: left; }
+      100% { background-position: right; }
+    }
+    .rgb-text {
+      background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+    }
+    footer {
+      margin-top: 25px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="mainContainer">
+    <img src="https://i.ibb.co/6RzcnLWR/jpg.jpg"/>
+    <h2>🚀 <span class="rgb-text">MANISHA-MD MINI BOT</span></h2>
+
+    <form id="botForm">
+      <input type="text" name="ownerNumber" placeholder="Your WhatsApp Number (e.g 94XXXXXXXXX)" required/><br/>
+      <input type="text" name="sessionId" placeholder="SESSION_ID" required/><br/>
+      <button type="submit">Create Bot</button>
+    </form>
+
+    <div style="margin-top:20px;">
+      <h3>🗑️ Delete Bot</h3>
+      <form id="deleteForm">
+        <input type="text" name="repoName" placeholder="bot name (e.g manaofc-abc123)" required/><br/>
+        <button type="submit" style="background:rgba(255,0,0,0.9);">Delete Bot</button>
+      </form>
+    </div>
+
+    <div style="margin-top:15px;">
+      <a class="contact" href="https://wa.me/94721551183" target="_blank">👨‍💻 Contact</a>
+      <a class="pair-btn" href="https://manaofc-pair-h4jv.onrender.com" target="_blank">🪀 Pair</a>
+      <a class="help-btn" href="#" onclick="alert('📘 HOW TO CREATE MANISHA-MD MINI BOT 🤖\n\n1️⃣ Enter your WhatsApp number with +94.\n2️⃣ Click Pair to get SESSION_ID.\n3️⃣ Paste SESSION_ID here and click Create Bot.\n4️⃣ Wait 1 minute for setup.');">😫 Help</a>
+    </div>
+  </div>
+
+  <footer>Developed by <span class="rgb-text">manaofc</span> ©2025</footer>
+
+  <script>
+    // Create bot
+    document.getElementById('botForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = {
+        ownerNumber: form.ownerNumber.value,
+        sessionId: form.sessionId.value
+      };
+      document.getElementById("mainContainer").innerHTML = "<h2>⏳ Creating your bot...</h2>";
+      try {
+        const res = await fetch('/create-bot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("mainContainer").innerHTML = `
+            <h2>🤖 Bot connected successfully ✔️</h2>
+            <p><b>Bot name:</b> ${data.repoName}</p>
+            <p>Please wait 1 minute for setup...</p>
+            <p><b>Developer:</b> <a href="https://wa.me/94721551183" style="color:lime;">manaofc</a></p>
+          `;
+        } else {
+          document.getElementById("mainContainer").innerHTML = "<h3>❌ Error: " + data.error + "</h3>";
+        }
+      } catch (err) {
+        document.getElementById("mainContainer").innerHTML = "<h3>❌ Connection error</h3>";
+      }
+    });
+
+    // Delete bot
+    document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const repoName = e.target.repoName.value.trim();
+      if (!repoName) return alert('Bot name required');
+      if (!confirm(`Are you sure you want to delete bot: ${repoName}?`)) return;
+      document.getElementById("mainContainer").innerHTML = "<h2>⏳ Deleting bot...</h2>";
+      try {
+        const res = await fetch('/delete-bot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repoName })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("mainContainer").innerHTML = "<h2>✅ " + data.message + "</h2>";
+        } else {
+          document.getElementById("mainContainer").innerHTML = "<h3>❌ Error: " + data.error + "</h3>";
+        }
+      } catch (err) {
+        document.getElementById("mainContainer").innerHTML = "<h3>❌ Connection error</h3>";
+      }
+    });
+  </script>
+</body>
+</html>
