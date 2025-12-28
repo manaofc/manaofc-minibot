@@ -13,8 +13,8 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname)); // serve index.html + assets
 
 // 🧩 GitHub credentials (set these in .env file)
-const GITHUB_TOKEN = "VCU2jXP3zv92f4Psnk2x2x4ocnVQMm0Xh07k";
-const GITHUB_USER = "buddika-iresh17";
+const GITHUB_TOKEN = "8lPKJuIR3L84EuOHOngfanxoc5WHVc0MOwbn";
+const GITHUB_USER = "dhanukadiwan-sketch";
 
 const githubHeaders = {
   Authorization: `token ghp_${GITHUB_TOKEN}`,
